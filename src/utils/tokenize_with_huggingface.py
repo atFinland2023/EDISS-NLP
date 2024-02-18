@@ -31,12 +31,16 @@ class TextDataset(Dataset):
 
 
 # Tokenization using Hugging Face tokenizer
-def tokenize_with_huggingface(data, logger):
+def tokenize_with_huggingface(data, logger, parameters):
     
     max_length = data["tweet_text_processed"].apply(lambda x: len(x.split())).max()
     
     logger.info(f"Number of Tokenized features are {max_length}")
-    tokenizer = AutoTokenizer.from_pretrained("bert-base-uncased")
+    tokenizer = AutoTokenizer.from_pretrained(parameters['tokenizer'])
+    if 'gpt' in parameters['tokenizer']:
+        # Set the padding token
+        tokenizer.pad_token = tokenizer.eos_token
+    logger.info(f"Tokenizer is {parameters['tokenizer']}")
     # Get the vocabulary size
     vocab_size = tokenizer.vocab_size
     tokenized_data = tokenizer(

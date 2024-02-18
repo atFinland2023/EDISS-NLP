@@ -7,6 +7,7 @@ from src.utils.utils import *
 from src.utils.tokenize_with_huggingface import *
 from src.utils.customized_configparser import *
 from src.utils.logger import *
+from src.model.LSTM_GPT import *
 from src.model.LSTM import *
 from src.model.general_models import *
 from functools import partial
@@ -47,10 +48,13 @@ def all_in_one(logger, parameters):
     test_and_evaluate_models(df, logger, parameters)
     
     #Tokenizing
-    tokenized_data, vocab_size = tokenize_with_huggingface(df, logger)
-
-    # Train LSTM
-    train_validate_test_LSTM(tokenized_data, vocab_size, logger, parameters)
+    tokenized_data, vocab_size = tokenize_with_huggingface(df, logger, parameters)
+    #train GPT
+    if 'gpt' in parameters['tokenizer']: 
+        train_validate_test_LSTM_GPT(tokenized_data, vocab_size, logger, parameters)
+    # Train BERT
+    else: 
+        train_validate_test_LSTM(tokenized_data, vocab_size, logger, parameters)
     
 if __name__ == "__main__":
 

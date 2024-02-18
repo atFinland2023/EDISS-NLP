@@ -46,7 +46,7 @@ def test_and_evaluate_models(df, logger, parameters):
         'Logistic Regression': LogisticRegression(C=1, solver="liblinear", max_iter=1000),
         'Multinomial Naive Bayes': MultinomialNB(),
         # 'Random Forest': RandomForestClassifier(),
-        # 'XGBoost': XGBClassifier()
+        'XGBoost': XGBClassifier()
     }
     
     # Split dataset

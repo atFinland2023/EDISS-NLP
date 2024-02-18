@@ -67,15 +67,24 @@ def train_validate_test_LSTM(tokenized_data, vocab_size,logger, parameters):
     
     # Hyperparameters
     vocab_size = vocab_size  # Assuming you are using the base model of BERT, adjust based on your tokenizer
-    embed_size = 250
-    hidden_size = 128
-    output_size = 1
+    embed_size = int(parameters['embed_size'])
+    hidden_size = int(parameters['hidden_size'])
+    output_size = int(parameters['output_size'])
     num_epochs = int(parameters['epochs'])
     batch_size = int(parameters['batch_size'])
     learning_rate = float(parameters['learning_rate'])
     val_threshold = float(parameters['val_threshold'])
     test_threshold = float(parameters['test_threshold'])
     torch.manual_seed(parameters['seed'])
+    
+    logger.info(f'embed_size:{embed_size}')
+    logger.info(f'hidden_size:{hidden_size}')
+    logger.info(f'output_size:{output_size}')
+    logger.info(f'batch_size:{batch_size}')
+    logger.info(f'learning_rate:{learning_rate}')
+
+    
+
     
     # Initialize model, loss function, and optimizer
     model = LSTMModel(vocab_size, embed_size, hidden_size, output_size).to(device)
@@ -88,8 +97,8 @@ def train_validate_test_LSTM(tokenized_data, vocab_size,logger, parameters):
     # Split dataset into train, validation, and test sets
     dataset_size = len(tokenized_data['input_ids'])
     indices = list(range(dataset_size))
-    split1 = int(np.floor(val_threshold * dataset_size))  # 80-20 train-validation split
-    split2 = int(np.floor(test_threshold * dataset_size))  # 90-10 train-test split
+    split1 = int(np.floor(val_threshold * dataset_size))  
+    split2 = int(np.floor(test_threshold * dataset_size))  
 
     # Define samplers for each set
     train_sampler = SubsetRandomSampler(indices[:split1])
@@ -178,7 +187,7 @@ def train_validate_test_LSTM(tokenized_data, vocab_size,logger, parameters):
             best_val_loss = avg_val_loss
             best_model_state = model.state_dict().copy()
             # Optionally, you can also save the best model checkpoint to a file
-            torch.save(model.state_dict(), os.path.join(parameters['model_path'],'best_model.pth'))
+            torch.save(model.state_dict(), os.path.join(parameters['model_path'],f'best_model_epoch_{epoch+1}.pth'))
             
             
     # Load the best model state
