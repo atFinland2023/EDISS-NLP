@@ -19,6 +19,7 @@ class LSTMModel(nn.Module):
 
     def forward(self, input_ids, attention_mask):
         embedded = self.embedding(input_ids)
+        embedded = embedded * attention_mask.unsqueeze(-1)
         lstm_out, _ = self.lstm(embedded)
         output = self.fc(lstm_out[:, -1, :])
         output = self.sigmoid(output)
